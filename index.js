@@ -4,11 +4,13 @@ const mongoose = require("mongoose")
 const { AdminModel, ContactModel, ProductModel } = require("./schemas/userSchemas")
 const { hashPassword, hashCompare, createToken, validate, roleAdminGaurd } = require('./common/auth')
 const { dbUrl } = require('./common/dbConfig');
+const cors = require("cors")
 
 mongoose.connect(dbUrl)
 
 const app = express()
 
+app.use(cors())
 app.use(express.json());
 
 app.get("/", function (req, res) {
