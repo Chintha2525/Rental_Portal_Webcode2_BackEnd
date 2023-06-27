@@ -18,45 +18,40 @@ const createToken = async(payload)=>{
     return token
 }
 
-const validate = async(req, res, next) => {
-    if(req.headers.authorization) 
-    {
-        let token = req.headers.authorization.split(" ")[1]
-        let data = await jwt.decode(token)
-        if(Math.floor((+new Date())/1000) < data.exp)
-        {
-            next()
-        }
-        else
-        {
-            res.status(401).send({message : "Token Expired"})
-        }
+const validate = (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).send({ message: "Token Not Found" });
     }
-        else
-        {
-            res.status(400).send({message : "Token Not Found"})
-        }
-    
-}
+  
+    try {
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      if (Math.floor(Date.now() / 1000) < decoded.exp) {
+        next();
+      } else {
+        res.status(401).send({ message: "Token Expired" });
+      }
+    } catch (error) {
+      res.status(500).send({ message: "Invalid Token", error });
+    }
+  };
 
-const roleAdminGaurd = async(req, res, next) => {
-    if(req.headers.authorization) 
-    {
-        let token = req.headers.authorization.split(" ")[1]
-        let data = await jwt.decode(token)
-        if(data.role === "admin")
-        {
-            next()
-        }
-        else
-        {
-            res.status(401).send({message : "Only Admin's are Allowed"})
-        }
+  const roleAdminGaurd = (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).send({ message: "Token Not Found" });
     }
-        else
-        {
-            res.status(400).send({message : "Token Not Found"})
-        }
-}
+  
+    try {
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      if (decoded.role === "admin") {
+        next();
+      } else {
+        res.status(401).send({ message: "Only Admins are Allowed" });
+      }
+    } catch (error) {
+      res.status(500).send({ message: "Invalid Token", error });
+    }
+  };
 
 module.exports = { hashPassword, hashCompare, createToken, validate, roleAdminGaurd }
