@@ -92,14 +92,14 @@ app.get('/admin/login', validate, roleAdminGaurd, async function (req, res) {
 //   }
 // })
 
-app.post('/login', validate, roleAdminGaurd, async (req, res) => {
+app.post('/login', async (req, res) => {
   try {
     const admin = await AdminModel.findOne({ email: req.body.email }).exec();
     console.log(admin)
     if (admin) {
       const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
       if (passwordMatch) {
-        const token = jwt.sign({ _id: admin._id }, process.env.SECRET_KEY, { expiresIn: '3m' });
+        const token = jwt.sign({ _id: admin._id }, process.env.SECRET_KEY, { expiresIn: '5m' });
         res.status(200).json({ message: 'Success', token });
       } else {
         res.status(401).json({ message: 'Incorrect email/password' });
