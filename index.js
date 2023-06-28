@@ -21,7 +21,7 @@ app.get("/", function (req, res) {
 
 app.post("/signup", async (req, res) => {
   try {
-    let user = await AdminModel.findOne({ emaill: req.body.email })
+    let user = await AdminModel.findOne({ email: req.body.email })
 
     if (!user) {
       let hashedPassword = await hashPassword(req.body.password)
@@ -98,7 +98,7 @@ app.post("/contact", async (req, res) => {
     let contact = await ContactModel.create(req.body)
 
     res.status(201).send({
-      message: "User Signup Successfully !!!"
+      message: "Contact Created Successfully !!!"
     })
   } catch (error) {
     console.log(error)
@@ -208,7 +208,7 @@ app.put("/updateprod/:id", async (req, res) => {
 
 app.post("/hours/:id", async (req, res) => {
   try {
-    const { _id } = req.params;
+    const { _id } = req.params.id;
     const product = await ProductModel.findById(_id);
     const { startDate, endDate } = req.body;
     const date1 = new Date(startDate);
