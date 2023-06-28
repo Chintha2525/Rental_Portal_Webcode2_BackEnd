@@ -18,40 +18,78 @@ const createToken = async(payload)=>{
     return token
 }
 
-const validate = (req, res, next) => {
-    const token = req.headers.authorization.split(" ")[1];
-    if (!token) {
-      return res.status(401).send({ message: "Token Not Found" });
-    }
+// const validate = (req, res, next) => {
+//     const token = req.headers.authorization.split(" ")[1];
+//     if (!token) {
+//       return res.status(401).send({ message: "Token Not Found" });
+//     }
   
-    try {
-      const decoded = jwt.verify(token, process.env.SECRET_KEY);
-      if (Math.floor(Date.now() / 1000) < decoded.exp) {
-        next();
-      } else {
-        res.status(401).send({ message: "Token Expired" });
-      }
-    } catch (error) {
-      res.status(500).send({ message: "Invalid Token", error });
-    }
-  };
+//     try {
+//       const decoded = jwt.verify(token, process.env.SECRET_KEY);
+//       if (Math.floor(Date.now() / 1000) < decoded.exp) {
+//         next();
+//       } else {
+//         res.status(401).send({ message: "Token Expired" });
+//       }
+//     } catch (error) {
+//       res.status(500).send({ message: "Invalid Token", error });
+//     }
+//   };
 
-  const roleAdminGaurd = (req, res, next) => {
-    const token = req.headers.authorization.split(" ")[1];
-    if (!token) {
-      return res.status(401).send({ message: "Token Not Found" });
-    }
+const validate = async(req,res,next)=>{
+    
+  if(req.headers.authorization)
+  {
+      //"Bearer hfdwibfjwehdbfjwdhbeflewhjbclewf"
+      //["Bearer","hfdwibfjwehdbfjwdhbeflewhjbclewf"]
+      let token = req.headers.authorization.split(" ")[1]
+      let data = await jwt.decode(token)
+      if(Math.floor((+new Date())/1000) < data.exp)
+          next()
+      else
+          res.status(401).send({message:"Token Expired"})
+  }
+  else
+  {
+      res.status(400).send({message:"Token Not Found"})
+  }
+}
+
+  // const roleAdminGaurd = (req, res, next) => {
+  //   const token = req.headers.authorization.split(" ")[1];
+  //   if (!token) {
+  //     return res.status(401).send({ message: "Token Not Found" });
+  //   }
   
-    try {
-      const decoded = jwt.verify(token, process.env.SECRET_KEY);
-      if (decoded.role === "admin") {
-        next();
-      } else {
-        res.status(401).send({ message: "Only Admins are Allowed" });
-      }
-    } catch (error) {
-      res.status(500).send({ message: "Invalid Token", error });
+  //   try {
+  //     const decoded = jwt.verify(token, process.env.SECRET_KEY);
+  //     if (decoded.role === "admin") {
+  //       next();
+  //     } else {
+  //       res.status(401).send({ message: "Only Admins are Allowed" });
+  //     }
+  //   } catch (error) {
+  //     res.status(500).send({ message: "Invalid Token", error });
+  //   }
+  // };
+
+  const roleAdminGaurd = async(req,res,next)=>{
+
+    if(req.headers.authorization)
+    {
+        //"Bearer hfdwibfjwehdbfjwdhbeflewhjbclewf"
+        //["Bearer","hfdwibfjwehdbfjwdhbeflewhjbclewf"]
+        let token = req.headers.authorization.split(" ")[1]
+        let data = await jwt.decode(token)
+        if(data.role==='admin')
+            next()
+        else
+            res.status(401).send({message:"Only Admins are allowed"})
     }
-  };
+    else
+    {
+        res.status(400).send({message:"Token Not Found"})
+    }
+}
 
 module.exports = { hashPassword, hashCompare, createToken, validate, roleAdminGaurd }
