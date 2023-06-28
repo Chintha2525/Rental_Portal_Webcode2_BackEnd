@@ -55,23 +55,7 @@ const validate = async(req,res,next)=>{
   }
 }
 
-  // const roleAdminGaurd = (req, res, next) => {
-  //   const token = req.headers.authorization.split(" ")[1];
-  //   if (!token) {
-  //     return res.status(401).send({ message: "Token Not Found" });
-  //   }
   
-  //   try {
-  //     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-  //     if (decoded.role === "admin") {
-  //       next();
-  //     } else {
-  //       res.status(401).send({ message: "Only Admins are Allowed" });
-  //     }
-  //   } catch (error) {
-  //     res.status(500).send({ message: "Invalid Token", error });
-  //   }
-  // };
 
   const roleAdminGaurd = async(req,res,next)=>{
 

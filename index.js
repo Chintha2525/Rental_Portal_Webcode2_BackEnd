@@ -60,37 +60,57 @@ app.get('/admin/login', validate, roleAdminGaurd, async function (req, res) {
 });
 
 
-app.post('/login', async (req, res) => {
-  try {
-    let user = await AdminModel.findOne({ email: req.body.email })
-    if (user) {
-      if (await hashCompare(req.body.password, user.password)) {
-        let token = await createToken({
-          name: user.name,
-          email: user.email,
-          id: user._id,
-          role: user.role
-        })
-        res.status(200).send({
-          message: "User Login Successfull!",
-          token
-        })
-      }
-      else {
-        res.status(401).send({ message: "Invalid Credential" })
-      }
-    }
-    else {
-      res.status(404).send({ message: "User Does Not Exists!" })
-    }
+// app.post('/login', async (req, res) => {
+//   try {
+//     let user = await AdminModel.findOne({ email: req.body.email }).exec()
+//     if (user) {
+//       if (await hashCompare(req.body.password, user.password)) {
+//         let token = await createToken({
+//           name: user.name,
+//           email: user.email,
+//           id: user._id,
+//           role: user.role
+//         })
+//         res.status(200).send({
+//           message: "User Login Successfull!",
+//           token
+//         })
+//       }
+//       else {
+//         res.status(401).send({ message: "Invalid Credential" })
+//       }
+//     }
+//     else {
+//       res.status(404).send({ message: "User Does Not Exists!" })
+//     }
 
+//   } catch (error) {
+//     res.status(500).send({
+//       message: "Internal Server Error",
+//       error
+//     })
+//   }
+// })
+
+app.post('/login', validate, roleAdminGaurd, async (req, res) => {
+  try {
+    const admin = await AdminModel.findOne({ email: req.body.email }).exec();
+    if (admin) {
+      const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
+      if (passwordMatch) {
+        const token = jwt.sign({ _id: admin._id }, process.env.SECRET_KEY, { expiresIn: '3m' });
+        res.status(200).json({ message: 'Success', token });
+      } else {
+        res.status(401).json({ message: 'Incorrect email/password' });
+      }
+    } else {
+      res.status(404).json({ message: 'Incorrect email/password' });
+    }
   } catch (error) {
-    res.status(500).send({
-      message: "Internal Server Error",
-      error
-    })
+    console.log(error);
+    res.status(500).json({ message: 'Something went wrong' });
   }
-})
+});
 
 
 app.post("/contact", async (req, res) => {
