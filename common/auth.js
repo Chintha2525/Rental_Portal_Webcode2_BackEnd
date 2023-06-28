@@ -44,7 +44,7 @@ const validate = async(req,res,next)=>{
       //["Bearer","hfdwibfjwehdbfjwdhbeflewhjbclewf"]
       let token = req.headers.authorization.split(" ")[1]
       let data = await jwt.decode(token)
-      if(Math.floor((+new Date())/1000) < data.exp)
+      if(data && data.exp && Math.floor((+new Date()) / 1000) < data.exp)
           next()
       else
           res.status(401).send({message:"Token Expired"})
