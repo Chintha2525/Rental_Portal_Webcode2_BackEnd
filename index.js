@@ -95,6 +95,7 @@ app.get('/admin/login', validate, roleAdminGaurd, async function (req, res) {
 app.post('/login', validate, roleAdminGaurd, async (req, res) => {
   try {
     const admin = await AdminModel.findOne({ email: req.body.email }).exec();
+    console.log(admin)
     if (admin) {
       const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
       if (passwordMatch) {
