@@ -77,11 +77,11 @@ app.post('/login', validate, roleAdminGaurd, async (req, res) => {
         })
       }
       else {
-        res.status(402).send({ message: "Invalid Credential" })
+        res.status(401).send({ message: "Invalid Credential" })
       }
     }
     else {
-      res.status(400).send({ message: "User Does Not Exists!" })
+      res.status(404).send({ message: "User Does Not Exists!" })
     }
 
   } catch (error) {
