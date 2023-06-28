@@ -60,7 +60,7 @@ app.get('/admin/login', validate, roleAdminGaurd, async function (req, res) {
 });
 
 
-app.post('/login', validate, roleAdminGaurd, async (req, res) => {
+app.post('/login', async (req, res) => {
   try {
     let user = await AdminModel.findOne({ email: req.body.email })
     if (user) {
