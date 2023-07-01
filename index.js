@@ -145,7 +145,7 @@ app.post("/product", async (req, res) => {
 
 app.get("/getproduct", async (req, res) => {
   try {
-    let product = await ProductModel.find({}, { _id: 0 })
+    let product = await ProductModel.find()
     res.status(200).send({
       product,
       message: "Products Fetch Successfilly !!!"
