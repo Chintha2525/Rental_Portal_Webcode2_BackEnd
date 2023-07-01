@@ -198,31 +198,54 @@ app.delete("/deleteprod/:id", async (req, res) => {
 })
 
 
+// app.put("/updateprod/:id", async (req, res) => {
+//   try {
+//     let product = await ProductModel.findOne({ _id: req.params.id })
+//     if (product) {
+//       product.Name = req.body.Name
+//       product.Price = req.body.Price
+//       product.Url = req.body.Url
+//       product.Quantity = req.body.Quantity
+//       product.Hours = req.body.Hours
+
+//       await product.save()
+
+//       res.status(200).send({
+//         message: "Product Update Successfully !!!"
+//       })
+//     }
+//     else {
+//       res.status(400).send({ message: "Product Does Not Exists!" })
+//     }
+//   } catch (error) {
+//     res.status(500).send({
+//       error, message: "Internal Servar Error"
+//     })
+//   }
+// })
+
 app.put("/updateprod/:id", async (req, res) => {
   try {
-    let product = await ProductModel.findOne({ _id: req.params.id })
-    if (product) {
-      product.Name = req.body.Name
-      product.Price = req.body.Price
-      product.Url = req.body.Url
-      product.Quantity = req.body.Quantity
-      product.Hours = req.body.Hours
+    const connection = await mongoose.connect(dbUrl);
+    const productData = await ProductModel.findOne({ _id: req.params.id });
 
-      await product.save()
-
-      res.status(200).send({
-        message: "Product Update Successfully !!!"
-      })
-    }
-    else {
-      res.status(400).send({ message: "Product Does Not Exists!" })
+    if (productData) {
+      delete req.body._id;
+      const product = await ProductModel.updateOne(
+        { _id: req.params.id },
+        { $set: req.body }
+      );
+      res.status(200).send(product);
+      await connection.disconnect();
+    } else {
+      res.status(404).send({ message: "Product not found" });
     }
   } catch (error) {
-    res.status(500).send({
-      error, message: "Internal Servar Error"
-    })
+    console.log(error);
+    res.status(500).send({ message: "Something went wrong" });
   }
-})
+});
+
 
 
 
