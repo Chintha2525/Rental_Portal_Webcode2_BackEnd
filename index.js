@@ -21,7 +21,7 @@ app.get("/", function (req, res) {
 
 app.post("/signup", async (req, res) => {
   try {
-    let user = await AdminModel.findOne({ email: req.body.email })
+    let user = await AdminModel.findOne({ email: req.body.email });
 
     if (!user) {
       let hashedPassword = await hashPassword(req.body.password)
