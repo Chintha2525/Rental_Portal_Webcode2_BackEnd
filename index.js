@@ -236,7 +236,7 @@ app.put("/updateprod/:id", async (req, res) => {
         { $set: req.body }
       );
       res.status(200).send(product);
-      await connection.disconnect();
+      await connection.disconnect()
     } else {
       res.status(404).send({ message: "Product not found" });
     }
