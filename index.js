@@ -132,6 +132,7 @@ app.post("/product", async (req, res) => {
   try {
     let product = await ProductModel.create(req.body)
     res.status(201).send({
+      product,
       message: "Product Added Successfully"
     })
   } catch (error) {
