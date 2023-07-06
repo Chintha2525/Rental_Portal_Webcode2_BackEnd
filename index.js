@@ -259,7 +259,7 @@ app.post("/hours/:id", async (req, res) => {
     const date2 = new Date(endDate);
     const hours = (date2 - date1) / (1000 * 3600);
     
-    res.status(200).send({ hours });
+    res.status(200).json(hours);
     // res.status(200).send(hours);
 
     } catch (error) {
