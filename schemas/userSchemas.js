@@ -52,7 +52,7 @@ let ProductSchema = new mongoose.Schema(
         Name:{type:String,required:true},
         Price:{type:String,required:true},
         Url:{type:String,required:true},
-        Quantity:{type:String,required:true},
+        Quantity:{type:Number,required:true},
         Hours:{type:String,required:true},
         startDate:{type:Date,required:false},
         endDate:{type:Date,required:false},
