@@ -18,31 +18,6 @@ app.get("/", function (req, res) {
 });
 
 
-app.post("/signup", async (req, res) => {
-  try {
-    let user = await AdminModel.findOne({ email: req.body.email });
-
-    if (!user) {
-      let hashedPassword = await hashPassword(req.body.password)
-      req.body.password = hashedPassword
-      let user = await AdminModel.create(req.body)
-
-      res.status(201).send({
-        message: "User Signup Successfully !!!"
-      })
-    }
-    else {
-      res.status(400).send({ message: "User Already Exists !!!" })
-    }
-  } catch (error) {
-    res.status(500).send({
-      message: "Internal Server Error",
-      error
-    })
-  }
-})
-
-
 app.get('/admin/login', validate, roleAdminGaurd, async function (req, res) {
   try {
     let users = await AdminModel.find({}, { password: 0, _id: 0 });
@@ -71,7 +46,7 @@ app.post('/login', async (req, res) => {
           role: user.role
         })
         res.status(200).send({
-          message: "User Login Successfull!",
+          message: "Admin Login Successfull!",
           token
         })
       }
@@ -80,7 +55,7 @@ app.post('/login', async (req, res) => {
       }
     }
     else {
-      res.status(404).send({ message: "User Does Not Exists!" })
+      res.status(404).send({ message: "Admin Does Not Exists!" })
     }
 
   } catch (error) {
