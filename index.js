@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require("express")
 const mongoose = require("mongoose")
-const { AdminModel, ContactModel, ProductModel } = require("./schemas/userSchemas")
+const { AdminModel, ProductModel } = require("./schemas/userSchemas")
 const { hashPassword, hashCompare, createToken, validate, roleAdminGaurd } = require('./common/auth')
 const { dbUrl } = require('./common/dbConfig');
 const cors = require("cors")
@@ -17,7 +17,6 @@ app.get("/", function (req, res) {
   res.send("Equipment rental portal Project...");
 });
 
-// Create signup for users
 
 app.post("/signup", async (req, res) => {
   try {
@@ -92,40 +91,8 @@ app.post('/login', async (req, res) => {
   }
 })
 
-// app.post('/login', async (req, res) => {
-//   try {
-//     const admin = await AdminModel.findOne({ email: req.body.email }).exec();
-//     console.log(admin)
-//     if (admin) {
-//       const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
-//       if (passwordMatch) {
-//         const token = jwt.sign({ _id: admin._id }, process.env.SECRET_KEY, { expiresIn: '5m' });
-//         res.status(200).json({ message: 'Success', token });
-//       } else {
-//         res.status(401).json({ message: 'Incorrect email/password' });
-//       }
-//     } else {
-//       res.status(404).json({ message: 'Incorrect email/password' });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: 'Something went wrong' });
-//   }
-// });
 
 
-app.post("/contact", async (req, res) => {
-  try {
-    let contact = await ContactModel.create(req.body)
-
-    res.status(201).send({
-      message: "Contact Created Successfully !!!"
-    })
-  } catch (error) {
-    console.log(error)
-    res.status(500).send({ message: "Internal Server Error" })
-  }
-})
 
 
 app.post("/product", async (req, res) => {
@@ -199,31 +166,6 @@ app.delete("/deleteprod/:id", async (req, res) => {
 })
 
 
-// app.put("/updateprod/:id", async (req, res) => {
-//   try {
-//     let product = await ProductModel.findOne({ _id: req.params.id })
-//     if (product) {
-//       product.Name = req.body.Name
-//       product.Price = req.body.Price
-//       product.Url = req.body.Url
-//       product.Quantity = req.body.Quantity
-//       product.Hours = req.body.Hours
-
-//       await product.save()
-
-//       res.status(200).send({
-//         message: "Product Update Successfully !!!"
-//       })
-//     }
-//     else {
-//       res.status(400).send({ message: "Product Does Not Exists!" })
-//     }
-//   } catch (error) {
-//     res.status(500).send({
-//       error, message: "Internal Servar Error"
-//     })
-//   }
-// })
 
 app.put("/updateprod/:id", async (req, res) => {
   try {
@@ -260,7 +202,6 @@ app.post("/hours/:id", async (req, res) => {
     const Hours = (date2 - date1) / (1000 * 3600);
     
     res.status(200).json(Hours);
-    // res.status(200).send(hours);
 
     } catch (error) {
     console.log(error);

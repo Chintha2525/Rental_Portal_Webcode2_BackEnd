@@ -23,30 +23,6 @@ let userSchema = new mongoose.Schema(
 )
 
 
-let ContactSchema = new mongoose.Schema(
-    {
-        Name:{type:String,required:true},
-        Email:{
-            type:String,
-            required:true,
-            lowercase:true,
-            validate:(value)=>{
-                return validator.isEmail(value)
-            }
-        },
-        Message:{type:String,required:true},
-        Mobile:{type:String,required:false},
-        CreatedAt:{type:Date,default:Date.now},
-    },
-    
-    {
-       collection:'contacts',
-       versionKey:false
-    }
-)
-
-
-
 let ProductSchema = new mongoose.Schema(
     {
         Name:{type:String,required:true},
@@ -67,10 +43,8 @@ let ProductSchema = new mongoose.Schema(
 
 let AdminModel = mongoose.model('admin', userSchema)
 
-let ContactModel = mongoose.model("contact", ContactSchema)
-
 let ProductModel = mongoose.model("products", ProductSchema)
 
-module.exports={ AdminModel, ContactModel, ProductModel }
+module.exports={ AdminModel, ProductModel }
 
 
